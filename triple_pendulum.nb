@@ -1,0 +1,73 @@
+m1 = 1;
+m2 = 1;
+m3 = 1;
+l1 = 2;
+l2 = 1;
+l3 = 1;
+g = 10;
+x1[t_] := l1*Sin[\[Alpha][t]];
+y1[t_] := -l1*Cos[\[Alpha][t]];
+x2[t_] := x1[t] + l2*Sin[\[Beta][t]];
+y2[t_] := y1[t] - l2*Cos[\[Beta][t]];
+x3[t_] := x2[t] + l3*Sin[\[Gamma][t]];
+y3[t_] := y2[t] - l3*Cos[\[Gamma][t]];
+lag[t_] := 
+  0.5*m1*((x1'[t])^2 + (y1'[t])^2) + 
+   0.5*m2*((x2'[t])^2 + (y2'[t])^2) + 
+   0.5*m3*((x3'[t])^2 + (y3'[t])^2) - 
+   g (m1*y1[t] + m2*y2[t] + m3*y3[t]);
+dlagdal[t_] := D[lag[t], \[Alpha][t]];
+dlagdaldot[t_] := D[lag[t], \[Alpha]'[t]];
+dlagdbe[t_] := D[lag[t], \[Beta][t]];
+dlagdbedot[t_] := D[lag[t], \[Beta]'[t]];
+dlagdga[t_] := D[lag[t], \[Gamma][t]];
+dlagdgadot[t_] := D[lag[t], \[Gamma]'[t]];
+ddtdlagdaldot[t_] := D[dlagdaldot[t], t];
+ddtdlagdbedot[t_] := D[dlagdbedot[t], t];
+ddtdlagdgadot[t_] := D[dlagdgadot[t], t];
+solution = 
+  NDSolve[{{ddtdlagdaldot[t] == dlagdal[t], \[Alpha]'[0] == 
+      0, \[Alpha][0] == Pi/2}, {ddtdlagdbedot[t] == 
+      dlagdbe[t], \[Beta]'[0] == 0, \[Beta][0] == 
+      0}, {ddtdlagdgadot[t] == dlagdga[t], \[Gamma]'[0] == 
+      0, \[Gamma][0] == 0}}, {\[Alpha], \[Beta], \[Gamma]}, {t, 0, 
+    75}];
+Manipulate[
+ Graphics[{PointSize[0.02], {Thick, Red, 
+    Line[{{0, 0}, 
+      l1*Join[Sin[\[Alpha][t] /. 
+          solution], -Cos[\[Alpha][t] /. solution]]}]}, {Thick, Blue, 
+    Line[{l1*
+       Join[Sin[\[Alpha][t] /. 
+          solution], -Cos[\[Alpha][t] /. solution]], 
+      Join[l2*Sin[\[Beta][t] /. solution] + 
+        l1*Sin[\[Alpha][t] /. solution], -l2*
+         Cos[\[Beta][t] /. solution] - 
+        l1*Cos[\[Alpha][t] /. solution]]}]}, 
+   Point[l1*
+     Join[Sin[\[Alpha][t] /. 
+        solution], -Cos[\[Alpha][t] /. solution]]], 
+   Point[Join[
+     l2*Sin[\[Beta][t] /. solution] + 
+      l1*Sin[\[Alpha][t] /. solution], -l2*
+       Cos[\[Beta][t] /. solution] - 
+      l1*Cos[\[Alpha][t] /. solution]]], {Thick, Green, 
+    Line[{Join[
+       l2*Sin[\[Beta][t] /. solution] + 
+        l1*Sin[\[Alpha][t] /. solution], -l2*
+         Cos[\[Beta][t] /. solution] - 
+        l1*Cos[\[Alpha][t] /. solution]], 
+      Join[
+       l3*Sin[\[Gamma][t] /. solution] + 
+        l2*Sin[\[Beta][t] /. solution] + 
+        l1*Sin[\[Alpha][t] /. solution], -l3*
+         Cos[\[Gamma][t] /. solution] - 
+        l2*Cos[\[Beta][t] /. solution] - 
+        l1*Cos[\[Alpha][t] /. solution]]}]}, 
+   Point[Join[
+     l3*Sin[\[Gamma][t] /. solution] + 
+      l2*Sin[\[Beta][t] /. solution] + 
+      l1*Sin[\[Alpha][t] /. solution], -l3*
+       Cos[\[Gamma][t] /. solution] - l2*Cos[\[Beta][t] /. solution] -
+       l1*Cos[\[Alpha][t] /. solution]]]}, PlotRange -> 4, 
+  Axes -> True], {t, 0, 75}]
