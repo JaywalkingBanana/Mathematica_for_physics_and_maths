@@ -1,0 +1,28 @@
+initialvx = 0.0;
+initialvy = 3;
+initialvz = 0.0;
+initialx = 0.2;
+initialy = -1;
+initialz = 0;
+m = 10*10^10;
+g = 9.81;
+endtime = 2;
+plotrange = 2;
+sol = NDSolve[{{x''[t] + 
+       6.67*10^(-11)*m/(Sqrt[(x[t])^2 + (y[t])^2 + (z[t])^2])^3*
+        x[t] == 0, x'[0] == initialvx, 
+     x[0] == initialx}, {y''[t] + 
+       6.67*10^(-11)*m/(Sqrt[(x[t])^2 + (y[t])^2 + (z[t])^2])^3*
+        y[t] == 0, y'[0] == initialvy, 
+     y[0] == initialy}, {z''[t] + 
+       6.67*10^(-11)*m/(Sqrt[(x[t])^2 + (y[t])^2 + (z[t])^2])^3*z[t] +
+        g == 0, z'[0] == initialvz, z[0] == initialz}}, {x, y, z}, {t,
+     0, endtime}];
+Manipulate[
+ Show[ParametricPlot3D[
+   Join[x[t] /. sol, y[t] /. sol, z[t] /. sol], {t, 0, endtime}, 
+   PlotRange -> 3, ImageSize -> 700, Axes -> True, 
+   AxesLabel -> {"x", "y", "z"}, FaceGrids -> All], 
+  Graphics3D[{PointSize[
+     0.01], {Point[Join[x[t] /. sol, y[t] /. sol, z[t] /. sol]]}, 
+    Point[{0, 0, 0}]}]], {t, 0, endtime}]
