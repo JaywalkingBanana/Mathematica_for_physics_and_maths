@@ -1,0 +1,23 @@
+l = 2;
+m1 = 1;
+mc = 1;
+g = 10;
+k = 105;
+sol = NDSolve[{l*\[Alpha]''[t] + x''[t]*Cos[\[Alpha][t]] + 
+      g*l*Sin[\[Alpha][t]] == 0, 
+    mc*x''[t] + m1*l*\[Alpha]''[t]*Cos[\[Alpha][t]] - 
+      m1*l*(\[Alpha]'[t])^2*Sin[\[Alpha][t]] + 
+      m1*x''[t] == -k*(x[t] - 3), x'[0] == 0, 
+    x[0] == 0, \[Alpha]'[0] == 0, \[Alpha][0] == 
+     0}, {x, \[Alpha]}, {t, 0, 12}];
+Manipulate[
+ Graphics[{{Green, Thick, 
+    Line[{Join[x[t] /. sol, {0}], 
+      Join[l*Sin[\[Alpha][t] /. sol] + (x[t] /. sol), -l*
+        Cos[\[Alpha][t] /. sol]]}]}, {Red, 
+    Rectangle[Join[{-0.5} + (x[t] /. sol), {-0.0}]]}, {PointSize[
+     0.02], Point[
+     Join[l*Sin[\[Alpha][t] /. sol] + (x[t] /. sol), -l*
+       Cos[\[Alpha][t] /. sol]]]}, {Thick, 
+    Line[{{-10, 0.5}, Join[{-0.5} + (x[t] /. sol), {0.5}]}]}}, 
+  PlotRange -> {{-7, 7}, {-2, 2}}, Axes -> True], {t, 0, 12}]
