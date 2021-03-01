@@ -1,0 +1,21 @@
+initialvx = 0.1;
+initialvy = 0.05;
+initialvz = 0.0;
+initialx = -3;
+initialy = -2;
+initialz = 2;
+m = 10^9;
+endtime = 300;
+plotrange = 5;
+sol = NDSolve[{{x''[t] + 
+       6.67*10^(-11)*m/(Sqrt[(x[t])^2 + (y[t])^2])^3*x[t] == 0, 
+     x'[0] == initialvx, 
+     x[0] == initialx}, {y''[t] + 
+       6.67*10^(-11)*m/(Sqrt[(x[t])^2 + (y[t])^2])^3*y[t] == 0, 
+     y'[0] == initialvy, y[0] == initialy}, {z''[t] + 9.81 == 0, 
+     z'[0] == initialvz, z[0] == initialz}}, {x, y, z}, {t, 0, 
+    endtime}];
+Manipulate[
+ Graphics[{PointSize[0.02], Point[Join[x[t] /. sol, y[t] /. sol]]}, 
+  PlotRange -> plotrange, Axes -> True, ImageSize -> 500], {t, 0, 
+  endtime}]
